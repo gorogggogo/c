@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walking Game</title>
+<style>
+    canvas {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="480" height="320"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Player
+    const player = {
+        x: canvas.width / 2,
+        y: canvas.height - 30,
+        radius: 10,
+        speed: 2
+    };
+
+    // Controls
+    let isWalking = false;
+
+    canvas.addEventListener('touchstart', touchStartHandler, false);
+    canvas.addEventListener('touchend', touchEndHandler, false);
+
+    function touchStartHandler(e) {
+        isWalking = true;
+    }
+
+    function touchEndHandler(e) {
+        isWalking = false;
+    }
+
+    function drawPlayer() {
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function movePlayer() {
+        if (isWalking && player.y > player.radius) {
+            player.y -= player.speed;
+        }
+        if (!isWalking && player.y < canvas.height - player.radius) {
+            player.y += player.speed;
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlayer();
+    }
+
+    function update() {
+        movePlayer();
+        if (player.y < player.radius || player.y > canvas.height - player.radius) {
+            gameOver();
+        }
+    }
+
+    function main() {
+        draw();
+        update();
+        requestAnimationFrame(main);
+    }
+
+    function gameOver() {
+        alert('Game Over');
+        document.location.reload();
+    }
+
+    main();
+</script>
+</body>
+</html>
